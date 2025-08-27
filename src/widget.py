@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def mask_account_card(card_type_number: str) -> str:
     """Функция, которая умеет обрабатывать информацию как о картах, так и о счетах"""
     card_info = card_type_number.rsplit(' ', 1)
