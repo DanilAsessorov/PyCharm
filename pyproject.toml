@@ -28,7 +28,6 @@ exclude = 'venv'
 
 [tool.black]
 line-length = 119
-exclude = ".git"
 exclude = '''
 (
   /(
