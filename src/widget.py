@@ -7,11 +7,11 @@ def mask_account_card(card_type_number: str) -> str:
     avg_number = "** ****"
     return f"{card_info[0]} {card_info[1][:4]} {card_info[1][4:6]}{avg_number} {card_info[1][-4:]}"
 
+
 print(mask_account_card("Visa Platinum 7020792289606361"))
 
 
 def get_date(iso_date: str) -> str:
-
     """Преобразует дату в 'ДД.ММ.ГГГГ'"""
 
     return datetime.fromisoformat(iso_date).strftime('%d.%m.%Y')
