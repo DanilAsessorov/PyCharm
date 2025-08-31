@@ -9,8 +9,6 @@ def mask_account_card(card_type_number: str) -> str:
 
 
 print(mask_account_card("Visa Platinum 7020792289606361"))
-
-
 def get_date(iso_date: str) -> str:
     """Преобразует дату в 'ДД.ММ.ГГГГ'"""
 
