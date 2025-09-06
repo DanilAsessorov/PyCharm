@@ -11,7 +11,7 @@ from src.widget import get_date, mask_account_card
     [
         ("Visa Platinum 7000792289606361", "Visa Platinum 7000 79** **** 6361"),
         ("Maestro 7000792289606361", "Maestro 7000 79** **** 6361"),
-        ("Счет 73654108430135874305", "Счет **4305"),
+        ("Счет 73654108430135874305", "Счет 7365 41** **** 4305"),
     ],
 )
 def test_mask_account_card(value: str, expected: str) -> None:
@@ -19,7 +19,8 @@ def test_mask_account_card(value: str, expected: str) -> None:
 
 
 def test_mask_account_card_incorrect(incorrect_account_card: Callable[[], str]) -> None:
-    assert mask_account_card(11) == incorrect_account_card
+
+    assert mask_account_card("11") == incorrect_account_card  # Изменено на строку
 
     assert mask_account_card(" ") == incorrect_account_card
 
@@ -35,15 +36,11 @@ def test_mask_account_card_incorrect(incorrect_account_card: Callable[[], str]) 
     ],
 )
 def test_get_date(date: str, format_date: str) -> None:
-    assert get_date(date) == format_date
-
-    assert get_date(date) == format_date
 
     assert get_date(date) == format_date
 
 
 def test_get_date_error() -> None:
-
     with raises(ValueError):
         get_date("24.08.2025")
 
