@@ -44,3 +44,26 @@ def reverse_false_list() -> list[dict]:
         {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
         {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
     ]
+
+
+@pytest.fixture
+def currency_test_list():
+    return [
+        {"id": 1, "operationAmount": {"currency": {"name": "USD", "code": "USD"}}},
+        {"id": 2, "operationAmount": {"currency": {"name": "EUR", "code": "EUR"}}},
+    ]
+
+
+@pytest.fixture
+def currency_done_test_list():
+    return [{"id": 1, "operationAmount": {"currency": {"name": "USD", "code": "USD"}}}]
+
+
+@pytest.fixture
+def currency_no_usd():
+    return [{"id": 2, "operationAmount": {"currency": {"name": "EUR", "code": "EUR"}}}]
+
+
+@pytest.fixture
+def zero_list():
+    return []
