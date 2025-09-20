@@ -1,4 +1,5 @@
 import os
+import re
 
 from src.decorators import log, my_function
 
@@ -39,7 +40,13 @@ def my_function_key_error():
 def test_my_function_key_error(capsys):
     my_function_key_error()
     captured = capsys.readouterr()
-    assert "my_function_key_error error: 'b'" in captured.out
+    out = captured.out
+    m = re.search(r"my_function_key_error error:\s*(.*)", out)
+    assert m is not None
+    remainder = m.group(1)
+    # ожидаем, что в сообщении встречается KeyError и символ 'b'
+    assert "KeyError" in remainder or "Сообщение" in remainder
+    assert "'b'" in remainder
 
 
 # Проверка с разными типами аргументов:

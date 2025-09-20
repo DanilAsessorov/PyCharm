@@ -1,5 +1,9 @@
 from functools import wraps
 
+"""Декоратор log логирует вызовы функций: пишет результат или сообщение об ошибке в файл или в stdout.
+При успехе: записывает/выводит "Функция <имя> ок. Результат: <результат>".
+При исключении: записывает/выводит "<имя> error: <тип исключения>. Inputs: <args>, <kwargs>."""
+
 
 def log(filename=None):
     def decorator(func):
@@ -9,18 +13,22 @@ def log(filename=None):
                 result = func(*args, **kwargs)
                 name_func = func.__name__
                 if filename:
-                    file = open(filename, "a", encoding="utf-8")
-                    file.write(f"Функция {name_func} ок. Результат: {result}" + "\n")
-                    file.close()
+                    with open(filename, "a", encoding="utf-8") as file:
+                        file.write(f"Функция {name_func} ок. Результат: {result}" + "\n")
                 else:
-                    print(f"{name_func} ок. Результат: {func(*args, **kwargs)}")
+                    print(f"{name_func} ок. Результат: {result}")
+                return result
             except Exception as e:
+                # Объединяем все исключения в один блок
                 result = None
-                print(f"{func.__name__} error: {e}. Inputs: {args}, {kwargs}")
-            except ZeroDivisionError:
-                result = None
-                print(f"{func.__name__} error: ZeroDivisionError. Inputs: {args}, {kwargs}")
-            return result
+                name_func = func.__name__
+                log_message = f"{name_func} error: {type(e).__name__}. Inputs: {args}, {kwargs}. Сообщение: {e}"
+                if filename:
+                    with open(filename, "a", encoding="utf-8") as file:
+                        file.write(log_message + "\n")
+                else:
+                    print(log_message)
+                return result
 
         return wrapper
 
