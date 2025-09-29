@@ -3,9 +3,6 @@ import logging
 import os
 from typing import List, Any
 
-# Создание папки logs, если она не существует
-os.makedirs("logs", exist_ok=True)
-
 # Настройка логирования
 logger = logging.getLogger("utils")
 logger.setLevel(logging.DEBUG)
@@ -21,7 +18,6 @@ file_handler.setFormatter(file_formatter)
 # Добавление обработчика к логгеру (проверяем, чтобы обработчик не добавлялся дублирующе)
 if not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
     logger.addHandler(file_handler)
-
 
 def load_transactions(file_path: str) -> List[Any]:
     """Загрузить транзакции из JSON-файла.
