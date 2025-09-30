@@ -5,6 +5,7 @@ from typing import Union
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
+
 def get_masks_logger() -> logging.Logger:
     masks_logger = logging.getLogger("masks")
     masks_logger.setLevel(logging.DEBUG)
@@ -17,13 +18,17 @@ def get_masks_logger() -> logging.Logger:
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
 
-    if not any(isinstance(h, logging.FileHandler) and h.baseFilename == os.path.abspath(log_file)
-               for h in masks_logger.handlers):
+    if not any(
+        isinstance(h, logging.FileHandler) and h.baseFilename == os.path.abspath(log_file)
+        for h in masks_logger.handlers
+    ):
         masks_logger.addHandler(file_handler)
 
     return masks_logger
 
+
 logger = get_masks_logger()
+
 
 def get_mask_card_number(card_number: Union[int, str]) -> str:
     """Функция принимает на вход номер карты в виде
@@ -37,6 +42,7 @@ def get_mask_card_number(card_number: Union[int, str]) -> str:
     logger.error("masks: некорректный ввод номера карты")
     return "Некорректный ввод"
 
+
 def get_mask_account(account_number: Union[int, str]) -> str:
     """Функция принимает на вход номер счета в виде числа и возвращает маску номера по правилу **XXXX."""
     logger.info(f"masks: маскирование номера счета {account_number}")
@@ -49,12 +55,14 @@ def get_mask_account(account_number: Union[int, str]) -> str:
     logger.error("masks: некорректный ввод номера счета")
     return "Некорректный ввод"
 
+
 def main():
     # Пример вызовов, чтобы логи попали в файл
-    card = get_mask_card_number('4111111111111111')
-    account = get_mask_account('3900123456789012')
-    logger.info(f'Masked card: {card}')
-    logger.info(f'Masked account: {account}')
+    card = get_mask_card_number("4111111111111111")
+    account = get_mask_account("3900123456789012")
+    logger.info(f"Masked card: {card}")
+    logger.info(f"Masked account: {account}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

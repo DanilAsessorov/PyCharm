@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import List, Any
+from typing import Any, List
 
 # Настройка логирования
 logger = logging.getLogger("utils")
@@ -18,6 +18,7 @@ file_handler.setFormatter(file_formatter)
 # Добавление обработчика к логгеру (проверяем, чтобы обработчик не добавлялся дублирующе)
 if not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
     logger.addHandler(file_handler)
+
 
 def load_transactions(file_path: str) -> List[Any]:
     """Загрузить транзакции из JSON-файла.
