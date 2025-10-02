@@ -23,13 +23,27 @@ logger = logging.getLogger(__name__)
 
 
 def read_transactions_from_csv(file_path: str) -> List[Dict]:
+    """Функция для считывания финансовых операций из Excel - файла,
+    принимает путь к файлу CSV в качестве аргумента и выдает список
+    словарей с транзакциями."""
     logger.info(f"Попытка прочитать данные из CSV файла: {file_path}")
     if not os.path.exists(file_path):
         logger.error(f"Файл {file_path} не найден.")
         raise FileNotFoundError(f"Файл {file_path} не найден.")
     try:
         df = pd.read_csv(file_path)
+
+        # Проверяем заголовки и данные, чтобы убедиться, что все корректно
+        logger.info(f"Заголовки: {df.columns.tolist()}")
+        logger.info(f"Первые 5 строк данных:\n{df.head()}")
+
         transactions = df.to_dict(orient="records")
+
+        # Убедимся, что полученный результат не пустой
+        if not transactions:
+            logger.error("Считывание вернуло пустой список транзакций.")
+            raise ValueError("Считывание вернуло пустой список транзакций.")
+
         logger.info(f"Успешно считано {len(transactions)} транзакций из файла: {file_path}")
         return transactions
     except Exception as e:
@@ -38,6 +52,9 @@ def read_transactions_from_csv(file_path: str) -> List[Dict]:
 
 
 def read_transactions_from_excel(file_path: str) -> List[Dict]:
+    """Функция для считывания финансовых операций из Excel - файла,
+    принимает путь к файлу Excel в качестве аргумента и выдает список
+    словарей с транзакциями."""
     logger.info(f"Попытка прочитать данные из Excel файла: {file_path}")
     if not os.path.exists(file_path):
         logger.error(f"Файл {file_path} не найден.")
@@ -53,6 +70,7 @@ def read_transactions_from_excel(file_path: str) -> List[Dict]:
 
 
 def filter_transactions(transactions: List[Dict], search_string: str) -> List[Dict]:
+    """Функция фильтрации транзакций по строке"""
     logger.info(f"Попытка фильтрации транзакций по строке: {search_string}")
     pattern = re.compile(re.escape(search_string), re.IGNORECASE)  # Компилируем шаблон
     filtered_transactions = [
@@ -63,6 +81,7 @@ def filter_transactions(transactions: List[Dict], search_string: str) -> List[Di
 
 
 def count_transactions_by_category(transactions: List[Dict], categories: List[str]) -> Dict[str, int]:
+    """Функция для подсчёта транзакций по категориям."""
     logger.info("Подсчет транзакций по категориям.")
     category_count = {category: 0 for category in categories}
     for transaction in transactions:
