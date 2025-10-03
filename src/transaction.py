@@ -21,6 +21,7 @@ log_file_path = logs_dir + "/transaction.log"
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def read_transactions_from_csv(file_path: str) -> List[Dict]:
     """Читает CSV файл с разделителем ';' и возвращает список словарей (pd.DataFrame->to_dict)."""
     logger.info(f"Попытка прочитать данные из CSV файла: {file_path}")
@@ -45,6 +46,7 @@ def read_transactions_from_csv(file_path: str) -> List[Dict]:
     except Exception as e:
         logger.error(f"Ошибка при чтении файла {file_path}: {e}")
         raise
+
 
 def read_transactions_from_excel(file_path: str) -> List[Dict]:
     """Функция для считывания финансовых операций из Excel - файла,
