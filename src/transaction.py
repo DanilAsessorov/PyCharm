@@ -21,25 +21,21 @@ log_file_path = logs_dir + "/transaction.log"
 logging.basicConfig(filename=log_file_path, level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-
 def read_transactions_from_csv(file_path: str) -> List[Dict]:
-    """Функция для считывания финансовых операций из Excel - файла,
-    принимает путь к файлу CSV в качестве аргумента и выдает список
-    словарей с транзакциями."""
+    """Читает CSV файл с разделителем ';' и возвращает список словарей (pd.DataFrame->to_dict)."""
     logger.info(f"Попытка прочитать данные из CSV файла: {file_path}")
     if not os.path.exists(file_path):
         logger.error(f"Файл {file_path} не найден.")
         raise FileNotFoundError(f"Файл {file_path} не найден.")
-    try:
-        df = pd.read_csv(file_path)
 
-        # Проверяем заголовки и данные, чтобы убедиться, что все корректно
-        logger.info(f"Заголовки: {df.columns.tolist()}")
+    try:
+        df = pd.read_csv(file_path, delimiter=";", encoding="utf-8")
+        logger.info(f"Заголовки: {list(df.columns)}")
         logger.info(f"Первые 5 строк данных:\n{df.head()}")
 
+        # Преобразуем в список словарей
         transactions = df.to_dict(orient="records")
 
-        # Убедимся, что полученный результат не пустой
         if not transactions:
             logger.error("Считывание вернуло пустой список транзакций.")
             raise ValueError("Считывание вернуло пустой список транзакций.")
@@ -49,7 +45,6 @@ def read_transactions_from_csv(file_path: str) -> List[Dict]:
     except Exception as e:
         logger.error(f"Ошибка при чтении файла {file_path}: {e}")
         raise
-
 
 def read_transactions_from_excel(file_path: str) -> List[Dict]:
     """Функция для считывания финансовых операций из Excel - файла,
