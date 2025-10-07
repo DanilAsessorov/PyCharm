@@ -2,12 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.transaction import (
-    count_transactions_by_category,
-    filter_transactions,
-    read_transactions_from_csv,
-    read_transactions_from_excel,
-)
+from src.transaction import (count_transactions_by_category, filter_transactions, read_transactions_from_csv,
+                             read_transactions_from_excel)
 
 
 def test_read_transactions_from_csv():
