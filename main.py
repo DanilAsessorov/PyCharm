@@ -8,24 +8,29 @@ from src.widget import get_date, mask_account_card
 if __name__ == "__main__":
 
     def main():
-        """отвечает за основную логику проекта и связывает функциональности между собой"""
+        """Отвечает за основную логику проекта и связывает функциональности между собой"""
         transaction_data = []  # Инициализируем переменную перед использованием
-
         while True:
             print(
                 """
-            Программа: Привет! Добро пожаловать в программу работы
-            с банковскими транзакциями.
-            Выберите необходимый пункт меню:
-            1. Получить информацию о транзакциях из JSON-файла
-            2. Получить информацию о транзакциях из CSV-файла
-            3. Получить информацию о транзакциях из XLSX-файла
-            """
+                Программа: Привет! Добро пожаловать в программу работы
+                с банковскими транзакциями.
+                Выберите необходимый пункт меню:
+                1. Получить информацию о транзакциях из JSON-файла
+                2. Получить информацию о транзакциях из CSV-файла
+                3. Получить информацию о транзакциях из XLSX-файла
+                """
             )
-            users_input = int(input("Введите нужную цифру:   "))
-            if users_input in [1, 2, 3]:
-                break
+            try:
+                users_input = int(input("Введите нужную цифру: "))
+                if users_input in [1, 2, 3]:
+                    break
+                else:
+                    print("Программа: Неправильный ввод. Пожалуйста, введите 1, 2 или 3.")
+            except ValueError:
+                print("Программа: Неправильный ввод. Пожалуйста, введите число.")
 
+        # Загрузка данных транзакций из выбранного формата
         if users_input == 1:
             transaction_data = load_transactions(r"data\operations.json")
         elif users_input == 2:
@@ -33,41 +38,45 @@ if __name__ == "__main__":
         elif users_input == 3:
             transaction_data = read_transactions_from_excel(r"data\transactions_excel.xlsx")
 
+        # Проверка на пустые данные
+        if not transaction_data:
+            print("Программа: Нет транзакций для отображения. Попробуйте снова.")
+            return  # Завершаем работу функции main, если данные пусты
+
         print(
             """
             Программа: Введите статус, по которому необходимо выполнить фильтрацию.
-            Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING
+            Доступные для фильтрации статусы: EXECUTED, CANCELED, PENDING
             """
         )
 
         while True:
-            users_input = input("Введите статус:   ").upper()
+            users_input = input("Введите статус: ").upper()
             if users_input in ["EXECUTED", "CANCELED", "PENDING"]:
                 break
-            print(f"Программа: Статус операции {users_input} недоступен. ")
+            print(f"Программа: Статус операции {users_input} недоступен.")
 
         # Фильтрация транзакций по статусу
         transaction_data = filter_by_state(transaction_data, state=users_input)
 
         print("Программа: Отсортировать операции по дате? Да/Нет")
-        users_input1 = input("Сделайте выбор:   ").upper()
+        users_input1 = input("Сделайте выбор: ").upper()
         if users_input1 == "ДА":
             while True:
                 print("Программа: Отсортировать по возрастанию (1) или по убыванию (2)?")
-                users_input2 = int(input("Поставьте необходимое число:   "))
-                if users_input2 in [1, 2]:
-                    break
-            if users_input2 == 1:
-                transaction_data = sort_by_date(transaction_data, reverse=True)
-            else:
-                transaction_data = sort_by_date(transaction_data, reverse=False)
+                try:
+                    users_input2 = int(input("Поставьте необходимое число: "))
+                    if users_input2 in [1, 2]:
+                        break
+                except ValueError:
+                    print("Программа: Пожалуйста, введите 1 или 2.")
+            transaction_data = sort_by_date(transaction_data, reverse=users_input2 == 2)
 
         print("Программа: Выводить только рублевые транзакции? Да/Нет")
-        users_input3 = input("Сделайте выбор:   ").upper()
+        users_input3 = input("Сделайте выбор: ").upper()
         if users_input3 == "ДА":
             code_currency = "RUB"
-            print(f"код валюты {code_currency}")
-            # Фильтрация только рублевых транзакций
+            print(f"Код валюты: {code_currency}")
             transaction_data = [
                 txn for txn in transaction_data if txn["operationAmount"]["currency"]["code"] == code_currency
             ]
@@ -95,11 +104,17 @@ if __name__ == "__main__":
             # Создаем словарь для передачи в convert_to_rub
             transaction = {"amount": iammount, "currency": icur}
 
+            try:
+                convert_amount = convert_to_rub(transaction)  # Возможна ошибка при конвертации
+            except Exception as e:
+                print(f"Ошибка при конвертации: {e}")
+                convert_amount = "Ошибка"
+
             print(
                 f"""
                 {di} {i['description']}
                 {mask_account_card(fromi)} - > {mask_account_card(toi)}
-                {convert_to_rub(transaction)}  # Передаем словарь вместо отдельных аргументов
+                {convert_amount}
                 """
             )
 
